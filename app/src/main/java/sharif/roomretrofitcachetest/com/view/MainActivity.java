@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
                         if (listResource.status == Status.SUCCESS){
                             repoList = listResource.data;
                             repoListAdapter = new RepoListAdapter(repoList, MainActivity.this);
+                            rvReposList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                            rvReposList.setAdapter(repoListAdapter);
                         }else if (listResource.status == Status.LOADING){
                             Toast.makeText(MainActivity.this, "Loading Fetch Data", Toast.LENGTH_SHORT).show();
                         }else {
@@ -69,10 +71,6 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-
-        rvReposList.setLayoutManager(new LinearLayoutManager(this));
-        rvReposList.setAdapter(repoListAdapter);
-
     }
 
     AppDatabase provideDb(Context context) {
