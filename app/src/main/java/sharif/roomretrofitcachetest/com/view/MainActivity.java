@@ -10,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     RepoListAdapter repoListAdapter;
     RepoRepository repoRepository;
     AppDatabase appDatabase;
-
+    Button btnSearch;
     List<Repo> repoList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,25 +44,16 @@ public class MainActivity extends AppCompatActivity {
         appDatabase = provideDb(this);
 
         etSearchRepos = findViewById(R.id.etRepoSearch);
+        btnSearch = findViewById(R.id.btnSearch);
         rvReposList = findViewById(R.id.repo_list);
 
 
         repoRepository = new RepoRepository(new AppExecutors(), appDatabase, provideRepoDao(appDatabase), new WebApiClient().callRetrofit());
 
-        etSearchRepos.addTextChangedListener(new TextWatcher() {
+        btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                repoRepository.loadRepos(s.toString()).observe(MainActivity.this, new Observer<Resource<List<Repo>>>() {
+            public void onClick(View v) {
+                repoRepository.loadRepos(etSearchRepos.getText().toString()).observe(MainActivity.this, new Observer<Resource<List<Repo>>>() {
                     @Override
                     public void onChanged(Resource<List<Repo>> listResource) {
                         if (listResource.status == Status.SUCCESS){
@@ -78,11 +71,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         rvReposList.setLayoutManager(new LinearLayoutManager(this));
-       /* repoListAdapter = new RepoListAdapter(repoList, MainActivity.this);*/
         rvReposList.setAdapter(repoListAdapter);
 
     }
-
 
     AppDatabase provideDb(Context context) {
         return Room.databaseBuilder(context, AppDatabase.class, "github.db").build();
