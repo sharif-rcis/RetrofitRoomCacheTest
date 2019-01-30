@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import sharif.roomretrofitcachetest.com.adapter.RepoListAdapter;
 import sharif.roomretrofitcachetest.com.api.WebApiClient;
 import sharif.roomretrofitcachetest.com.executors.AppExecutors;
 import sharif.roomretrofitcachetest.com.networkutils.Resource;
+import sharif.roomretrofitcachetest.com.networkutils.Status;
 import sharif.roomretrofitcachetest.com.repository.RepoRepository;
 import sharif.roomretrofitcachetest.com.room.dao.RepoDao;
 import sharif.roomretrofitcachetest.com.room.db.AppDatabase;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     RepoRepository repoRepository;
     AppDatabase appDatabase;
 
+    List<Repo> repoList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,13 +63,22 @@ public class MainActivity extends AppCompatActivity {
                 repoRepository.loadRepos(s.toString()).observe(MainActivity.this, new Observer<Resource<List<Repo>>>() {
                     @Override
                     public void onChanged(Resource<List<Repo>> listResource) {
-                        repoListAdapter = new RepoListAdapter(listResource.data, MainActivity.this);
+                        if (listResource.status == Status.SUCCESS){
+                            repoList = listResource.data;
+                            repoListAdapter = new RepoListAdapter(repoList, MainActivity.this);
+                        }else if (listResource.status == Status.LOADING){
+                            Toast.makeText(MainActivity.this, "Loading Fetch Data", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(MainActivity.this, "Error Fetching data", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 });
             }
         });
 
         rvReposList.setLayoutManager(new LinearLayoutManager(this));
+       /* repoListAdapter = new RepoListAdapter(repoList, MainActivity.this);*/
         rvReposList.setAdapter(repoListAdapter);
 
     }
