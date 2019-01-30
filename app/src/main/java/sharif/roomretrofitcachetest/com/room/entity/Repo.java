@@ -6,7 +6,7 @@ import android.arch.persistence.room.Index;
 
 import com.google.gson.annotations.SerializedName;
 
-import io.reactivex.annotations.NonNull;
+
 
 @Entity(indices = {@Index("id"), @Index("owner_login")},
         primaryKeys = {"id"})

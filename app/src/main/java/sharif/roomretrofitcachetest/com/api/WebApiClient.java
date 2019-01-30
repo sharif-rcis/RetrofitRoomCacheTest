@@ -8,21 +8,19 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+
 import retrofit2.converter.gson.GsonConverterFactory;
 import sharif.roomretrofitcachetest.com.BuildConfig;
 
 public class WebApiClient {
 
 
-    String baseUrl = "https://api.github.com/";
-
-    Gson gson = new GsonBuilder()
+    private Gson gson = new GsonBuilder()
             .setLenient()
             .create();
 
 
-    public Retrofit provideRetrofit() {
+    private Retrofit provideRetrofit() {
 
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
@@ -35,10 +33,10 @@ public class WebApiClient {
             clientBuilder.addInterceptor(logging);
         }
 
+        String baseUrl = "https://api.github.com/";
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(clientBuilder.build())
                 .build();
     }

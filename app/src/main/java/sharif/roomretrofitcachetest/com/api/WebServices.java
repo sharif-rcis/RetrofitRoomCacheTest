@@ -11,8 +11,9 @@ import sharif.roomretrofitcachetest.com.repository.RepoSearchResponse;
 public interface WebServices {
 
     //https://api.github.com/search/repositories?q={q}
+    //search/repositories?q={search}"
 
-    @GET("search/repositories?q={search}")
-    MutableLiveData<ApiResponse<RepoSearchResponse>> getRepo(@Query("search") String searchValue);
+    @GET("search/repositories")
+    LiveData<ApiResponse<RepoSearchResponse>> getRepo(@Query("q") String searchValue);
 
 }

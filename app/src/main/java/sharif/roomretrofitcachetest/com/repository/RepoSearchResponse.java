@@ -6,16 +6,12 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.annotations.NonNull;
 import sharif.roomretrofitcachetest.com.room.entity.Repo;
 
 public class RepoSearchResponse {
     @SerializedName("total_count")
     @Expose
     private int total;
-    @SerializedName("incomplete_results")
-    @Expose
-    private Boolean incompleteResults;
     @SerializedName("items")
     @Expose
     private List<Repo> items;
@@ -36,8 +32,6 @@ public class RepoSearchResponse {
     }
 
 
-
-    @NonNull
     public  List<Integer> getRepoIds() {
         List<Integer> repoIds = new ArrayList<>();
         for (Repo repo : items) {

@@ -12,7 +12,6 @@ import android.widget.EditText;
 
 import java.util.List;
 
-import io.reactivex.disposables.CompositeDisposable;
 import sharif.roomretrofitcachetest.com.R;
 import sharif.roomretrofitcachetest.com.adapter.RepoListAdapter;
 import sharif.roomretrofitcachetest.com.api.WebApiClient;
@@ -30,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     RepoListAdapter repoListAdapter;
     RepoRepository repoRepository;
     AppDatabase appDatabase;
-    public CompositeDisposable mCompositeDisposable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         etSearchRepos = findViewById(R.id.etRepoSearch);
         rvReposList = findViewById(R.id.repo_list);
 
-        mCompositeDisposable = new CompositeDisposable();
 
         repoRepository = new RepoRepository(new AppExecutors(), appDatabase, provideRepoDao(appDatabase), new WebApiClient().callRetrofit());
 
