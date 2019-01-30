@@ -38,7 +38,7 @@ public class RepoListAdapter extends RecyclerView.Adapter<RepoListAdapter.RepoHo
         Repo repo = repoList.get(position);
         holder.tvName.setText(repo.name);
         holder.tvDesc.setText(repo.description);
-        holder.ivStars.setText(repo.stars);
+        holder.tvStars.setText(String.valueOf(repo.stars));
     }
 
     @Override
@@ -49,13 +49,13 @@ public class RepoListAdapter extends RecyclerView.Adapter<RepoListAdapter.RepoHo
     class RepoHolder extends RecyclerView.ViewHolder {
         TextView tvName;
         TextView tvDesc;
-        TextView ivStars;
+        TextView tvStars;
 
         public RepoHolder(View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.name);
             tvDesc = itemView.findViewById(R.id.desc);
-            ivStars = itemView.findViewById(R.id.stars);
+            tvStars = itemView.findViewById(R.id.stars);
         }
     }
 

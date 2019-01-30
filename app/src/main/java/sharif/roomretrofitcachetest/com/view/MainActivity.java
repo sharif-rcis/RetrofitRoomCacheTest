@@ -4,12 +4,9 @@ import android.arch.lifecycle.Observer;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     AppDatabase appDatabase;
     Button btnSearch;
     List<Repo> repoList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,14 +54,14 @@ public class MainActivity extends AppCompatActivity {
                 repoRepository.loadRepos(etSearchRepos.getText().toString()).observe(MainActivity.this, new Observer<Resource<List<Repo>>>() {
                     @Override
                     public void onChanged(Resource<List<Repo>> listResource) {
-                        if (listResource.status == Status.SUCCESS){
+                        if (listResource.status == Status.SUCCESS) {
                             repoList = listResource.data;
-                            repoListAdapter = new RepoListAdapter(repoList, MainActivity.this);
+                            repoListAdapter = new RepoListAdapter(listResource.data, MainActivity.this);
                             rvReposList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                             rvReposList.setAdapter(repoListAdapter);
-                        }else if (listResource.status == Status.LOADING){
+                        } else if (listResource.status == Status.LOADING) {
                             Toast.makeText(MainActivity.this, "Loading Fetch Data", Toast.LENGTH_SHORT).show();
-                        }else {
+                        } else {
                             Toast.makeText(MainActivity.this, "Error Fetching data", Toast.LENGTH_SHORT).show();
                         }
 
