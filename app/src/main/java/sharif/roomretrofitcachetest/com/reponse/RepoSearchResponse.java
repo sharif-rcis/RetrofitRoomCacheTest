@@ -1,4 +1,4 @@
-package sharif.roomretrofitcachetest.com.repository;
+package sharif.roomretrofitcachetest.com.reponse;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -12,7 +12,7 @@ import retrofit2.Response;
 import sharif.roomretrofitcachetest.com.networkutils.ApiResponse;
 
 /**
- * A Retrofit adapterthat converts the Call into a LiveData of ApiResponse.
+ * A Retrofit adapter that converts the Call into a LiveData of ApiResponse.
  * @param <R>
  */
 public class LiveDataCallAdapter<R> implements CallAdapter<R, LiveData<ApiResponse<R>>> {

@@ -1,4 +1,4 @@
-package sharif.roomretrofitcachetest.com.repository;
+package sharif.roomretrofitcachetest.com.room.typeconverters;
 
 import android.annotation.SuppressLint;
 import android.arch.persistence.room.TypeConverter;
