@@ -12,6 +12,7 @@ public interface WebServices {
 
     //https://api.github.com/search/repositories?q={q}
     //search/repositories?q={search}"
+    //search/repositories?q=android
 
     @GET("search/repositories")
     LiveData<ApiResponse<RepoSearchResponse>> getRepo(@Query("q") String searchValue);

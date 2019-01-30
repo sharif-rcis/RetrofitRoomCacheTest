@@ -37,6 +37,7 @@ public class WebApiClient {
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .client(clientBuilder.build())
                 .build();
     }

@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.EditText;
 
 import java.util.List;
@@ -42,15 +44,31 @@ public class MainActivity extends AppCompatActivity {
 
         repoRepository = new RepoRepository(new AppExecutors(), appDatabase, provideRepoDao(appDatabase), new WebApiClient().callRetrofit());
 
-        repoRepository.loadRepos(etSearchRepos.getText().toString()).observe(this, new Observer<Resource<List<Repo>>>() {
+        etSearchRepos.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onChanged(Resource<List<Repo>> listResource) {
-                repoListAdapter = new RepoListAdapter(listResource.data, MainActivity.this);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                repoRepository.loadRepos(s.toString()).observe(MainActivity.this, new Observer<Resource<List<Repo>>>() {
+                    @Override
+                    public void onChanged(Resource<List<Repo>> listResource) {
+                        repoListAdapter = new RepoListAdapter(listResource.data, MainActivity.this);
+                    }
+                });
             }
         });
 
-        rvReposList.setAdapter(repoListAdapter);
         rvReposList.setLayoutManager(new LinearLayoutManager(this));
+        rvReposList.setAdapter(repoListAdapter);
+
     }
 
 
