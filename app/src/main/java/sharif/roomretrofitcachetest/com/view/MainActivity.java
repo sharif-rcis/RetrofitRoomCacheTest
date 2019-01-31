@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import sharif.roomretrofitcachetest.com.R;
+import sharif.roomretrofitcachetest.com.RepoViewModel;
 import sharif.roomretrofitcachetest.com.adapter.RepoListAdapter;
 import sharif.roomretrofitcachetest.com.api.WebApiClient;
 import sharif.roomretrofitcachetest.com.executors.AppExecutors;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     AppDatabase appDatabase;
     Button btnSearch;
     List<Repo> repoList;
+    RepoViewModel repoViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +50,25 @@ public class MainActivity extends AppCompatActivity {
 
 
         repoRepository = new RepoRepository(new AppExecutors(), appDatabase, provideRepoDao(appDatabase), new WebApiClient().callRetrofit());
+        repoViewModel = new RepoViewModel(repoRepository);
+
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                repoRepository.loadRepos(etSearchRepos.getText().toString()).observe(MainActivity.this, new Observer<Resource<List<Repo>>>() {
+                repoViewModel.setSearchValue(etSearchRepos.getText().toString());
+                repoViewModel.getSearchResultLiveData().observe(MainActivity.this, new Observer<Resource<List<Repo>>>() {
+                    @Override
+                    public void onChanged(@Nullable Resource<List<Repo>> listResource) {
+                        if (listResource.status == Status.SUCCESS) {
+                            repoList = listResource.data;
+                            repoListAdapter = new RepoListAdapter(listResource.data, MainActivity.this);
+                            rvReposList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                            rvReposList.setAdapter(repoListAdapter);
+                        }
+                    }
+                });
+                /*repoRepository.loadRepos(etSearchRepos.getText().toString()).observe(MainActivity.this, new Observer<Resource<List<Repo>>>() {
                     @Override
                     public void onChanged(Resource<List<Repo>> listResource) {
                         if (listResource.status == Status.SUCCESS) {
@@ -66,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     }
-                });
+                });*/
             }
         });
     }
