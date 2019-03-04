@@ -1,12 +1,12 @@
 package sharif.roomretrofitcachetest.com;
 
+import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 
 import java.util.List;
-import java.util.Objects;
 
 import sharif.roomretrofitcachetest.com.networkutils.Resource;
 import sharif.roomretrofitcachetest.com.repository.RepoRepository;
@@ -23,7 +23,15 @@ public class RepoViewModel extends ViewModel {
 
 
     public LiveData<Resource<List<Repo>>> getSearchResultLiveData() {
-        return Transformations.switchMap(searchValue, input -> repoRepository.loadRepos(searchValue.getValue()));
+        //return Transformations.switchMap(searchValue, input -> repoRepository.loadRepos(searchValue.getValue()));
+        // return Transformations.switchMap(searchValue, input -> getRepoList());
+        return Transformations.switchMap(searchValue, new Function<String, LiveData<Resource<List<Repo>>>>() {
+            @Override
+            public LiveData<Resource<List<Repo>>> apply(String input) {
+                return getRepoList();
+            }
+        });
+
     }
 
     public void setSearchValue(String input) {
@@ -31,5 +39,9 @@ public class RepoViewModel extends ViewModel {
             return;
         }
         searchValue.setValue(input);
+    }
+
+    private LiveData<Resource<List<Repo>>> getRepoList() {
+        return repoRepository.loadRepos(searchValue.getValue());
     }
 }

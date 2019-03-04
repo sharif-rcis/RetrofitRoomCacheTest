@@ -1,11 +1,14 @@
 package sharif.roomretrofitcachetest.com.repository;
 
 import android.arch.lifecycle.LiveData;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import sharif.roomretrofitcachetest.com.reponse.RepoSearchResponse;
 import sharif.roomretrofitcachetest.com.api.WebServices;
@@ -18,6 +21,7 @@ import sharif.roomretrofitcachetest.com.room.db.AppDatabase;
 import sharif.roomretrofitcachetest.com.room.entity.Repo;
 import sharif.roomretrofitcachetest.com.room.entity.RepoSearchResult;
 
+@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class RepoRepository {
 
     private final AppDatabase db;
@@ -27,6 +31,8 @@ public class RepoRepository {
     private final WebServices webServices;
 
     private final AppExecutors appExecutors;
+
+    private CacheValidityLimiter<String> validityLimiter = new CacheValidityLimiter<>(1, TimeUnit.MINUTES);
 
     public  RepoRepository(AppExecutors appExecutors, AppDatabase db, RepoDao repoDao, WebServices webServices) {
         this.db = db;
@@ -54,7 +60,8 @@ public class RepoRepository {
 
             @Override
             protected   boolean shouldFetch(@Nullable List<Repo> data) {
-                return data == null || data.isEmpty();
+                return data == null || data.isEmpty() || validityLimiter.shouldFetch("FETCH_IF_DATA_OLD");
+                //return true;
             }
 
             @NonNull
@@ -73,6 +80,11 @@ public class RepoRepository {
                     return webServices.getRepo("android");
                 }
 
+            }
+
+            @Override
+            protected void onFetchFailed() {
+                validityLimiter.reset("FETCH_IF_DATA_OLD");
             }
         }.asLiveData();
     }
